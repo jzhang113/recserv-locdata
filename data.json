@@ -1,0 +1,35 @@
+[
+	{
+		"FacilityId": 43,
+		"FacilityName": “Sample Rec Center”,
+		"LocationId": 86,
+		"TotalCapacity": 200,
+		"LocationName": "Track ",
+		"CountOfParticipants": 0,
+		"PercetageCapacity": 0,
+		"LastUpdatedDateAndTime": "2016-08-10T18:22:00",
+		"LastCount": 54
+	},
+	{
+		"FacilityId": 43,
+		"FacilityName": “Sample Rec Center”,
+		"LocationId": 110,
+		"TotalCapacity": 50,
+		"LocationName": "Climbing Wall",
+		"CountOfParticipants": 0,
+		"PercetageCapacity": null,
+		"LastUpdatedDateAndTime": "2016-06-29T22:29:00",
+		"LastCount": 0
+	},
+	{
+		"FacilityId": 43,
+		"FacilityName": “Sample Rec Center”,
+		"LocationId": 142,
+		"TotalCapacity": 400,
+		"LocationName": "Fitness Area",
+		"CountOfParticipants": 0,
+		"PercetageCapacity": 0,
+		"LastUpdatedDateAndTime": "2016-08-10T19:08:05.517",
+		"LastCount": 2
+	}
+]
