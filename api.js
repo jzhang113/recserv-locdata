@@ -70,6 +70,11 @@ function barGraph() {
 	var width = 500;
 	var height = 300;
 	var padding = 2;
+	var fullness = [];
+
+	for (let i = 0; i < occupancy.length; i++) {
+		fullness.push (occupancy[i] / maxCapacity[i] * 100);
+	}
 	
 	var chart = d3.select ("body").select ("#chart")
 		.append ("svg")
@@ -77,19 +82,19 @@ function barGraph() {
 		.attr ("height", height);
 
 	chart.selectAll ("rect")
-		.data (occupancy)
+		.data (fullness)
 		.enter()
 		.append ("rect")
 		.attr ("x", 0)
 		.attr ("y", function (d, i) {
-			return i * (height / occupancy.length);
+			return i * (height / fullness.length);
 		})
-		.attr ("width",  function (d) {
+		.attr ("width", function (d) {
 			return d * 10;
 		})
-		.attr ("height", height / occupancy.length - padding)
+		.attr ("height", height / fullness.length - padding)
 		.attr ("fill", function (d) {
-			return "rgb(" + (d * 10) + ", " + (255 - 10 * d) + ", 0)";
+			return "rgb(" + d + ", " + (255 - d) + ", 0)";
 		});
 
 	chart.selectAll ("text")
@@ -101,7 +106,7 @@ function barGraph() {
 		})
 		.attr ("x", 10)
 		.attr ("y", function (d, i) {
-			return i * (height / occupancy.length) + (height / occupancy.length - padding) / 2;
+			return i * (height / fullness.length) + (height / fullness.length - padding) / 2;
 		})
 }
 
