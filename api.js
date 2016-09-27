@@ -1,34 +1,110 @@
 // vivid green? #2ecc71
 
-var url = "http:\//goboardapi.azurewebsites.net/api/FacilityCount?AccountAPIKey=8C72A6A7-D6EE-4520-BC3A-52215462AC23";
-getData (url, processData);
+var prev;
+var occupacy;
+var maxCapacity = [];
+var locations = [];
+
+$(document).ready (function() {
+	getData();
+});
+
+function getData() {
+	$.ajax ({
+		type: "GET",
+		url: "https://goboardapi.azurewebsites.net/api/FacilityCount?AccountAPIKey=8C72A6A7-D6EE-4520-BC3A-52215462AC23",
+		cache: false,
+		timeout: 300000,
+		
+		contentType: "application/json; charset:UTF-8",
+		accepts: "application/json",
+
+		success: function (data) {
+			console.log ("new request at " + Date.now());	
+			
+			if (data != prev)
+				processData (data);
+			
+			setTimeout (getData, 300000); // 5 minutes
+		},
+		error: function (data) {
+			// TODO error handling stuff
+		}
+	});
+}
 
 function processData (data) {
+	occupancy = [];
 	var popData = JSON.parse (data);
 
-	for (let loc of popData) {
-		console.dir (loc);
+	if (prev != null)
+		var prevData = JSON.parse (prev);
+	else {
+		for (let loc of popData) {
+			maxCapacity.push (loc.TotalCapacity);
+			locations.push (loc.LocationName);
+		}
+	}
 
-		let count = document.getElementById ("count");
+	let count = document.getElementById ("count");
+	count.innerHTML = "";
+
+	for (let i = 0; i < popData.length; i++) {
+		let loc = popData[i];
+		occupancy.push (loc.LastCount);
+		
 		count.innerHTML += loc.LocationName + ": ";
-		count.innerHTML += loc.LastCount + " / ";
-		count.innerHTML += loc.TotalCapacity;
+		count.innerHTML += loc.LastCount + " / " + loc.TotalCapacity;
+		if (prevData != null)
+			count.innerHTML += "  (" + formatNum (loc.LastCount - prevData[i].LastCount) + ")";
 		count.innerHTML += "<br/>";
 	}
 
-	document.getElementById ("update").innerHTML += popData[0].LastUpdatedDateAndTime;
+	document.getElementById ("update").innerHTML = "Last Updated: " + popData[0].LastUpdatedDateAndTime;
+	
+	barGraph();
+	prev = data;
 }
 
-function getData (url, callback) {
-	var xhr = new XMLHttpRequest();
+function barGraph() {
+	var width = 500;
+	var height = 300;
+	var padding = 2;
+	
+	var chart = d3.select ("body").select ("#chart")
+		.append ("svg")
+		.attr ("width", width)
+		.attr ("height", height);
 
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 & xhr.status == 200)
-			callback (xhr.response);
-	}
+	chart.selectAll ("rect")
+		.data (occupancy)
+		.enter()
+		.append ("rect")
+		.attr ("x", 0)
+		.attr ("y", function (d, i) {
+			return i * (height / occupancy.length);
+		})
+		.attr ("width",  function (d) {
+			return d * 10;
+		})
+		.attr ("height", height / occupancy.length - padding)
+		.attr ("fill", function (d) {
+			return "rgb(" + (d * 10) + ", " + (255 - 10 * d) + ", 0)";
+		});
 
-	xhr.open ("GET", url, true);
-	xhr.setRequestHeader ("content-type", "application/json; charset = utf-8");
-	xhr.setRequestHeader ("accept", "application/json");
-	xhr.send (null);
+	chart.selectAll ("text")
+		.data (locations)
+		.enter()
+		.append ("text")
+		.text (function (d) {
+			return d;
+		})
+		.attr ("x", 10)
+		.attr ("y", function (d, i) {
+			return i * (height / occupancy.length) + (height / occupancy.length - padding) / 2;
+		})
+}
+
+function formatNum (n) {
+	return (n > 0 ? "+" + n : n)
 }
