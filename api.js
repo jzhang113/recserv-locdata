@@ -94,7 +94,7 @@ function barGraph() {
 		})
 		.attr ("height", height / fullness.length - padding)
 		.attr ("fill", function (d) {
-			return "rgb(" + d + ", " + (255 - d) + ", 0)";
+			return (d < 50) ? "rgb(" + Math.round (41 + 3.28 * d) + ", " + Math.round (186 - 0.12 * d) + ", 0)" : "rgb(" + Math.round (205 - 0.72 * (d - 50)) + ", " + Math.round (180 - 3.6 * (d - 50)) + ", 0)";
 		});
 
 	chart.selectAll ("text")
@@ -106,8 +106,8 @@ function barGraph() {
 		})
 		.attr ("x", 10)
 		.attr ("y", function (d, i) {
-			return i * (height / fullness.length) + (height / fullness.length - padding) / 2;
-		})
+			return i * (height / fullness.length) + (height / fullness.length - padding) / 2 + 4;
+		});
 }
 
 function formatNum (n) {
