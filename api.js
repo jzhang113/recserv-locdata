@@ -67,14 +67,13 @@ function processData (data) {
 function barGraph() {
 	var fullness = [];
 
-	var width = 500;
+	var width = "100%";
 	var height = 300;
 	var padding = 2;
 
 	var green = [41, 186, 0];
 	var yellow = [205, 180, 0];
 	var red = [169, 0, 0];
-	
 
 	for (let i = 0; i < occupancy.length; i++) {
 		fullness.push (occupancy[i] / maxCapacity[i] * 100);
@@ -94,7 +93,7 @@ function barGraph() {
 			return i * (height / fullness.length);
 		})
 		.attr ("width", function (d) {
-			return d * 10;
+			return d + "%";
 		})
 		.attr ("height", height / fullness.length - padding)
 		.attr ("fill", function (d) {
