@@ -81,22 +81,18 @@ function barGraph() {
 	}
 
 	var chart = d3.select ("#chart");
-
-	// remove extra data
-	chart.selectAll ("rect")
-		.data (fullness)
-		.exit()
-		.remove();
 	
 	// enter new data
-	chart.selectAll ("rect")
+	var barGroup = chart.selectAll ("g")
 		.data (fullness)
 		.enter()
-		.append ("rect");
+		.append ("g");
+
+	barGroup.append ("rect").append ("title");
+	barGroup.append ("text");
 
 	// update data
-	chart.selectAll ("rect")
-		.data (fullness)
+	chart.selectAll ("g").select ("rect")
 		.attr ("x", 0)
 		.attr ("y", function (d, i) {
 			return i * (height / fullness.length);
@@ -107,12 +103,20 @@ function barGraph() {
 		.attr ("height", height / fullness.length - padding)
 		.attr ("fill", function (d) {
 			return (d < 50) ? "rgb(" + Math.round (green[0] + (yellow[0] - green[0]) / 50 * d) + ", " + Math.round (green[1] + (yellow[1] - green[1]) / 50 * d) + ", " + Math.round(green[2] + (yellow[2] - green[2]) / 50 * d) + ")" : "rgb(" + Math.round (yellow[0] + (red[0] - yellow[0]) / 50 * (d - 50)) + ", " + Math.round (yellow[1] + (red[1] - yellow[1]) / 50 * (d - 50)) + ", " + Math.round (yellow[2] + (red[2] - yellow[2]) / 50 * (d - 50)) +")";
+		})
+
+	chart.selectAll ("g").select ("title")
+		.text (function (d) {
+			return d.toFixed (2) + "%";
 		});
-	
-	chart.selectAll ("text")
+
+	chart.selectAll ("g")
 		.data (locations)
 		.enter()
-		.append ("text")
+		.append ("g")
+		.append ("text");
+	
+	chart.selectAll ("g").select ("text")
 		.text (function (d) {
 			return d;
 		})
@@ -120,6 +124,12 @@ function barGraph() {
 		.attr ("y", function (d, i) {
 			return i * (height / fullness.length) + (height / fullness.length - padding) / 2 + 4;
 		});
+	
+	// remove extra data
+	chart.selectAll ("g")
+		.exit()
+		.remove();
+
 }
 
 function formatNum (n) {
