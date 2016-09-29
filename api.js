@@ -35,9 +35,9 @@ function processData (data) {
 	occupancy = [];
 	var popData = JSON.parse (data);
 
-	if (prev != null)
+	if (prev != null) {
 		var prevData = JSON.parse (prev);
-	else {
+	} else {
 		for (let loc of popData) {
 			maxCapacity.push (loc.TotalCapacity);
 			locations.push (loc.LocationName);
@@ -61,6 +61,7 @@ function processData (data) {
 	document.getElementById ("update").innerHTML = "Last Updated: " + popData[0].LastUpdatedDateAndTime;
 	
 	barGraph();
+
 	prev = data;
 }
 
@@ -78,16 +79,24 @@ function barGraph() {
 	for (let i = 0; i < occupancy.length; i++) {
 		fullness.push (occupancy[i] / maxCapacity[i] * 100);
 	}
-	
-	var chart = d3.select ("body").select ("#chart")
-		.append ("svg")
-		.attr ("width", width)
-		.attr ("height", height);
 
+	var chart = d3.select ("#chart");
+
+	// remove extra data
+	chart.selectAll ("rect")
+		.data (fullness)
+		.exit()
+		.remove();
+	
+	// enter new data
 	chart.selectAll ("rect")
 		.data (fullness)
 		.enter()
-		.append ("rect")
+		.append ("rect");
+
+	// update data
+	chart.selectAll ("rect")
+		.data (fullness)
 		.attr ("x", 0)
 		.attr ("y", function (d, i) {
 			return i * (height / fullness.length);
@@ -99,7 +108,7 @@ function barGraph() {
 		.attr ("fill", function (d) {
 			return (d < 50) ? "rgb(" + Math.round (green[0] + (yellow[0] - green[0]) / 50 * d) + ", " + Math.round (green[1] + (yellow[1] - green[1]) / 50 * d) + ", " + Math.round(green[2] + (yellow[2] - green[2]) / 50 * d) + ")" : "rgb(" + Math.round (yellow[0] + (red[0] - yellow[0]) / 50 * (d - 50)) + ", " + Math.round (yellow[1] + (red[1] - yellow[1]) / 50 * (d - 50)) + ", " + Math.round (yellow[2] + (red[2] - yellow[2]) / 50 * (d - 50)) +")";
 		});
-
+	
 	chart.selectAll ("text")
 		.data (locations)
 		.enter()
