@@ -1,5 +1,3 @@
-// vivid green? #2ecc71
-
 var prev;
 var occupacy;
 var maxCapacity = [];
@@ -67,10 +65,16 @@ function processData (data) {
 }
 
 function barGraph() {
+	var fullness = [];
+
 	var width = 500;
 	var height = 300;
 	var padding = 2;
-	var fullness = [];
+
+	var green = [41, 186, 0];
+	var yellow = [205, 180, 0];
+	var red = [169, 0, 0];
+	
 
 	for (let i = 0; i < occupancy.length; i++) {
 		fullness.push (occupancy[i] / maxCapacity[i] * 100);
@@ -94,7 +98,7 @@ function barGraph() {
 		})
 		.attr ("height", height / fullness.length - padding)
 		.attr ("fill", function (d) {
-			return (d < 50) ? "rgb(" + Math.round (41 + 3.28 * d) + ", " + Math.round (186 - 0.12 * d) + ", 0)" : "rgb(" + Math.round (205 - 0.72 * (d - 50)) + ", " + Math.round (180 - 3.6 * (d - 50)) + ", 0)";
+			return (d < 50) ? "rgb(" + Math.round (green[0] + (yellow[0] - green[0]) / 50 * d) + ", " + Math.round (green[1] + (yellow[1] - green[1]) / 50 * d) + ", " + Math.round(green[2] + (yellow[2] - green[2]) / 50 * d) + ")" : "rgb(" + Math.round (yellow[0] + (red[0] - yellow[0]) / 50 * (d - 50)) + ", " + Math.round (yellow[1] + (red[1] - yellow[1]) / 50 * (d - 50)) + ", " + Math.round (yellow[2] + (red[2] - yellow[2]) / 50 * (d - 50)) +")";
 		});
 
 	chart.selectAll ("text")
