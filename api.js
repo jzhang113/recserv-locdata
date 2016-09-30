@@ -44,21 +44,20 @@ function processData (data) {
 		}
 	}
 
-	let count = document.getElementById ("count");
-	count.innerHTML = "";
-
+	var count = $("#count").html("");
+	
 	for (let i = 0; i < popData.length; i++) {
 		let loc = popData[i];
 		occupancy.push (loc.LastCount);
 		
-		count.innerHTML += loc.LocationName + ": ";
-		count.innerHTML += loc.LastCount + " / " + loc.TotalCapacity;
+		count.append (loc.LocationName + ": ");
+		count.append (loc.LastCount + " / " + loc.TotalCapacity);
 		if (prevData != null)
-			count.innerHTML += "  (" + formatNum (loc.LastCount - prevData[i].LastCount) + ")";
-		count.innerHTML += "<br/>";
+			count.append ("  (" + formatNum (loc.LastCount - prevData[i].LastCount) + ")");
+		count.append ("<br/>");
 	}
 
-	document.getElementById ("update").innerHTML = "Last Updated: " + popData[0].LastUpdatedDateAndTime;
+	$("#update").html ("Last Updated: " + popData[0].LastUpdatedDateAndTime);
 	
 	barGraph();
 
