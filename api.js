@@ -108,6 +108,8 @@ function barGraph() {
 			return (d < 50) ? "rgb(" + Math.round (green[0] + (yellow[0] - green[0]) / 50 * d) + ", " + Math.round (green[1] + (yellow[1] - green[1]) / 50 * d) + ", " + Math.round(green[2] + (yellow[2] - green[2]) / 50 * d) + ")" : "rgb(" + Math.round (yellow[0] + (red[0] - yellow[0]) / 50 * (d - 50)) + ", " + Math.round (yellow[1] + (red[1] - yellow[1]) / 50 * (d - 50)) + ", " + Math.round (yellow[2] + (red[2] - yellow[2]) / 50 * (d - 50)) +")";
 		})
 
+	var popup = d3.select ("#tooltip");
+
 	chart.selectAll ("g").select (".invisible")
 		.attr ("x", 0)
 		.attr ("y", function (d, i) {
@@ -117,18 +119,14 @@ function barGraph() {
 		.attr ("height", height / fullness.length - padding)
 		.attr ("fill", "transparent")
 		.on ("mouseover", function (d) {
-			console.log (d);
-			var popup = d3.select ("#databox");
-			popup.html (d);
-			popup.show();
+			popup.style ("display", "block");
+			popup.html (d.toFixed (2) + "%");
+
+			popup.style ("left", d3.event.clientX + 10 + "px");
+			popup.style ("top", d3.event.clientY + "px");
 		})
 		.on ("mouseout", function() {
-			popup.hide();
-		});
-
-	chart.selectAll ("g").select ("title")
-		.text (function (d) {
-			return d.toFixed (2) + "%";
+			popup.style ("display", "none");
 		});
 
 	chart.selectAll ("g")
@@ -151,6 +149,14 @@ function barGraph() {
 		.exit()
 		.remove();
 
+}
+
+function getNodePos (e, body) {
+	console.log (e.node().offsetTop);
+	for (let lx = 0, ly = 0; e != null && e != body; lx += (e.offsetLeft || e.clientLeft), ly += (e.offsetTop || e.clientTop), e = (e.offsetParent || e.parentNode)) {
+		console.log (e.node());
+		return {x: lx, y: ly};
+	}
 }
 
 function formatNum (n) {
