@@ -120,7 +120,7 @@ function barGraph() {
 		.attr ("fill", "transparent")
 		.on ("mouseover", function (d) {
 			popup.style ("display", "block");
-			popup.html (d.toFixed (2) + "%");
+			popup.html (d.toFixed (2) + "% full");
 
 			popup.style ("left", d3.event.clientX + 10 + "px");
 			popup.style ("top", d3.event.clientY + "px");
